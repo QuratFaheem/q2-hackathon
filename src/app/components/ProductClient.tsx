@@ -1,5 +1,3 @@
-// ProductClient.tsx (Client Component)
-
 'use client'; // Mark this as a client-side component
 
 import Swal from "sweetalert2";
@@ -30,11 +28,11 @@ const ProductClient = ({ data }: ProductProps) => {
       icon: "success",
       title: `${data.productName} added to cart`,
       showConfirmButton: false,
-      timer: 6000,
+      timer: 3000,
     });
-    alert(`${data.productName} added to cart!`);
+    // Removed the alert() call
   };
-console.log(data)
+
   return (
     <div className="font-sans">
       <div className="p-4 max-w-6xl mx-auto">
