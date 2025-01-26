@@ -43,7 +43,7 @@ export default function Nikebar() {
     width={50}
     height={50}
   />
-  <Link href='/bag'><Image 
+  <Link href='/cart'><Image 
     src={'/s3.png'}
     alt=''
     width={50}

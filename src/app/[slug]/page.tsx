@@ -1,6 +1,7 @@
-import Image from "next/image";
-import Nikebar from "../components/nikebar";
+// pages/product/[slug].tsx (or productPage.tsx)
+import ProductClient from "../components/ProductClient";  // Import ProductClient
 import sanityClient from "@/sanity/sanity.client";
+
 
 interface ProductLog {
   _id: string;
@@ -10,26 +11,25 @@ interface ProductLog {
   category: string;
   inventory: number;
   productUrl: string;
-  imageUrl?: string;
+  imageUrl: string;
 }
-
+// Function to fetch product data
 async function getData(slug: string) {
-  const query = `
-    *[_type == "product" && slug.current == $slug][0]{
-      _id,
-      productName,
-      description,
-      price,
-      category,
-      "imageUrl": image.asset->url,
-      "productUrl": slug.current,
-    }
-  `;
+  const query = `*[_type == "product" && slug.current == $slug][0]{
+    _id,
+    productName,
+    description,
+    price,
+    category,
+    "imageUrl": image.asset->url,
+    "productUrl": slug.current
+  }`;
   const data = await sanityClient.fetch(query, { slug });
   return data;
 }
 
-export default async function Product({ params }: { params: { slug: string } }) {
+// Main server component for fetching and passing data to ProductClient
+export default async function ProductPage({ params }: { params: { slug: string } }) {
   const { slug } = params;
 
   if (!slug) {
@@ -50,57 +50,6 @@ export default async function Product({ params }: { params: { slug: string } }) 
     );
   }
 
-  return (
-    <div className="font-sans">
-      <div className="p-4 max-w-6xl mx-auto">
-        <Nikebar />
-        <div className="grid items-start grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Product Image */}
-          <div className="w-full flex justify-center">
-            <Image
-              src={data.imageUrl || "/placeholder-image.jpg"}
-              alt={data.productName}
-              width={500}
-              height={500}
-              className="w-full h-auto max-w-[400px] object-cover rounded-lg"
-            />
-          </div>
-
-          {/* Product Details */}
-          <div>
-            <p className="text-2xl md:text-3xl font-bold text-gray-800">
-              {data.productName}
-            </p>
-            <p className="mt-4 text-sm md:text-base text-gray-600">
-              {data.description}
-            </p>
-            <div className="mt-8">
-              <h3 className="text-gray-800 text-3xl md:text-4xl font-bold">
-                ${data.price}
-              </h3>
-            </div>
-
-            <div className="mt-10 flex flex-wrap gap-4">
-              <button
-                type="button"
-                className="flex items-center justify-center px-6 py-3 bg-black text-white text-sm md:text-base rounded-full hover:bg-gray-800 transition"
-              >
-                <svg
-                  xmlns=""
-                  className="w-5 h-5 fill-current mr-2"
-                  viewBox="0 0 512 512"
-                >
-                  <path
-                    d="M164.96 300.004h.024c.02 0 .04-.004.059-.004H437a15.003 15.003 0 0 0 14.422-10.879l60-210a15.003 15.003 0 0 0-2.445-13.152A15.006 15.006 0 0 0 497 60H130.367l-10.722-48.254A15.003 15.003 0 0 0 105 0H15C6.715 0 0 6.715 0 15s6.715 15 15 15h77.969c1.898 8.55 51.312 230.918 54.156 243.71C131.184 280.64 120 296.536 120 315c0 24.812 20.188 45 45 45h272c8.285 0 15-6.715 15-15s-6.715-15-15-15H165c-8.27 0-15-6.73-15-15 0-8.258 6.707-14.977 14.96-14.996zM477.114 90l-51.43 180H177.032l-40-180zM150 405c0 24.813 20.188 45 45 45s45-20.188 45-45-20.188-45-45-45-45 20.188-45 45zm45-15c8.27 0 15 6.73 15 15s-6.73 15-15 15-15-6.73-15-15 6.73-15 15-15zm167 15c0 24.813 20.188 45 45 45s45-20.188 45-45-20.188-45-45-45-45 20.188-45 45zm45-15c8.27 0 15 6.73 15 15s-6.73 15-15 15-15-6.73-15-15 6.73-15 15-15zm0 0"
-                    data-original="#000000"
-                  ></path>
-                </svg>
-                Add to cart
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+  // Pass product data to the client component
+  return <ProductClient data={data} />;
 }
