@@ -1,0 +1,6 @@
+Test Case ID,Test Case Description,Test Steps,Expected Result,Actual Result,Status,Severity Level,Assigned To,Remarks
+TC001,Verify product listing page loads.,Navigate to the homepage.,Products displayed successfully.,Products displayed.,Passed,Low,-,-
+TC002,Test product search functionality.,Enter "shoes" in the search bar and submit.,Working on,,,,-,-
+TC003,Test invalid product ID.,Visit /product/invalid-id.,Displays 404 or error message.,Error message shown.,Passed,High,-,Proper error message displayed.
+TC004,Test API error handling.,Simulate API timeout during product fetch.,Displays "Something went wrong.",Error message shown.,Passed,Medium,-,Logged API error successfully.
+TC005,Test responsive design.,Resize browser and test on mobile view.,Layout adjusts appropriately.,Layout responsive.,Passed,Low,-,Verified on Chrome and Firefox.
