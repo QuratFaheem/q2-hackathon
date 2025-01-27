@@ -53,6 +53,65 @@ export const GetMenShoes = async () => {
   return product;
 };
 
+export const GetwomenShoes = async () => {
+  const query = groq`*[_type == "product" && category == "Women's Shoes"]{
+  _id,
+  productName,
+  description,
+  price,
+  inventory,
+  "imageUrl": image.asset->url,
+  "productUrl": slug.current
+}`;
+
+  const product = await sanityClient.fetch(query); // Pass slug as parameter
+  return product;
+};
+
+export const Getkids = async () => {
+  const query = groq`*[_type == "product" && category == "kids"]{
+  _id,
+  productName,
+  description,
+  price,
+  inventory,
+  "imageUrl": image.asset->url,
+  "productUrl": slug.current
+}`;
+
+  const product = await sanityClient.fetch(query); // Pass slug as parameter
+  return product;
+};
+export const Getsale = async () => {
+  const query = groq`*[_type == "product" && category == "sale"]{
+  _id,
+  productName,
+  description,
+  price,
+  inventory,
+  "imageUrl": image.asset->url,
+  "productUrl": slug.current
+}`;
+
+  const product = await sanityClient.fetch(query); // Pass slug as parameter
+  return product;
+};
+
+export const Getsneakers = async () => {
+  const query = groq`*[_type == "product" && category == "sneakers"]{
+  _id,
+  productName,
+  description,
+  price,
+  inventory,
+  "imageUrl": image.asset->url,
+  "productUrl": slug.current
+}`;
+
+  const product = await sanityClient.fetch(query); // Pass slug as parameter
+  return product;
+};
+
 export const GetEssentials = async () => {
   const query = groq`*[_type == "product" && category == "Essentials"]{
   _id,

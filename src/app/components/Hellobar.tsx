@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Hellobar() {
   return (
@@ -8,7 +9,7 @@ export default function Hellobar() {
         Hello Nike App
       </div>
       <div className="text-sm sm:text-base mt-2">
-        Download the app to access everything Nike. <u>Get Your Great</u>
+        Download the app to access everything Nike.<Link href={'https://play.google.com/store/games?device=windows'}> <u>Get Your Great</u></Link>
       </div>
       <div className="relative w-full h-[50vh] sm:h-[60vh] md:h-[80vh] lg:h-screen mt-4">
         {/* Fullscreen Background Image */}

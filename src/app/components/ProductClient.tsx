@@ -29,6 +29,7 @@ const ProductClient = ({ data }: ProductProps) => {
       title: `${data.productName} added to cart`,
       showConfirmButton: false,
       timer: 3000,
+      toast: true, // Corrected: Pass a boolean, not a string
     });
     // Removed the alert() call
   };

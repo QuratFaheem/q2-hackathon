@@ -20,22 +20,18 @@ export default function Nikebar() {
         <li className="text-lg text-black">
           News & Featured
         </li>
-        <li className="text-lg text-black">Men</li>
-        <li className="text-lg text-black">
+       <Link href={'/menshoes'}> <li className="text-lg text-black">Men</li></Link>
+       <Link href={'/womenshoes'}> <li className="text-lg text-black">
           Women
-        </li>
-        <li className="text-lg text-black">Kids</li>
-        <li className="text-lg text-black">
+        </li></Link>
+        <Link href={'/kids'}><li className="text-lg text-black">Kids</li></Link>
+        <Link href={'/Sale'}><li className="text-lg text-black">
           Sale
-        </li>
-        <li className="text-lg text-black">SNKRS</li>
+        </li></Link>
+        <Link href={'/sneakers'}><li className="text-lg text-black">SNKRS</li></Link>
       </ul>
       <div className='flex flex-row justify-around space-x-2'>
-  <Image 
-    src={'/s1.png'}
-    alt=''
-    width={100}
-    height={100}
+  <input type='textbox' value='Search' className='rounded'
   />
   <Image 
     src={'/s2.png'}
