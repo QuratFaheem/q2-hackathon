@@ -3,8 +3,10 @@
 import React, { useEffect, useState } from 'react';
 import { TrashIcon } from '@heroicons/react/outline'; // Heroicons Trash icon
 import Image from 'next/image';
+import Header from '../components/header'
 import Nikebar from '../components/nikebar';
 import Footer from '../components/footer';
+
 
 interface ProductLog {
   _id: string;
@@ -69,7 +71,9 @@ const Cartpage = () => {
 
   return (
    
-    <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8"> <Nikebar/>
+    <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+       <Header/>
+       <Nikebar/>
       <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6 text-center">
         Your Shopping Bag
       </h1>
