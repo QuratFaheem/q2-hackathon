@@ -1,16 +1,14 @@
 import Header from "../components/header";
 import Nikebar from "../components/nikebar";
 import Footer from "../components/footer";
-import { GetAllProducts } from "@/sanity/sanity.query";
+import { Getsocks } from "@/sanity/sanity.query";
 import Link from "next/link";
 import Image from "next/image";
 import Sidemenue from "../components/sidemenue";
 
-
-export default async function Newproductpage() {
-  const productsData = await GetAllProducts();
+export default async function AllShoes() {
+  const productsData = await Getsocks();
   const products = productsData;
-  
 
   // Define the interface for Product
   interface ProductLog {
@@ -29,6 +27,7 @@ export default async function Newproductpage() {
       <Header />
       <Nikebar />
       <div className="flex flex-col md:flex-row">
+        {/* Side Navigation Bar */}
         {/* Side Navigation Bar */}
         <aside className="w-full md:w-64 bg-white text-black p-4 md:h-screen md:sticky top-0">
          <Sidemenue/>
@@ -64,7 +63,7 @@ export default async function Newproductpage() {
                   </h1>
                   <h2 className="text-gray-600 text-sm">{product.category}</h2>
                   <h1 className="text-black font-bold mt-1">
-                    $: ${product.price}
+                    MPR: ${product.price}
                   </h1>
                 </div>
               ))

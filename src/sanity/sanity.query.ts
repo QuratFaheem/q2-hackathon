@@ -127,4 +127,50 @@ export const GetEssentials = async () => {
   return productt;
 };
 
+export const Getshoes = async () => {
+  const query = groq`
+*[_type == "product" && category == "Men's Shoes" || category == "Women's Shoes"]{
+  _id,
+  productName,
+  description,
+  price,
+  inventory,
+  "imageUrl": image.asset->url,
+  "productUrl": slug.current
+}`;
 
+  const product = await sanityClient.fetch(query); // Pass slug as parameter
+  return product;
+};
+
+export const Getsports = async () => {
+  const query = groq`
+*[_type == "product" && category == "Sports Bras"]{
+  _id,
+  productName,
+  description,
+  price,
+  inventory,
+  "imageUrl": image.asset->url,
+  "productUrl": slug.current
+}`;
+
+  const product = await sanityClient.fetch(query); // Pass slug as parameter
+  return product;
+};
+
+export const Getsocks = async () => {
+  const query = groq`
+*[_type == "product" && category == "socks"]{
+  _id,
+  productName,
+  description,
+  price,
+  inventory,
+  "imageUrl": image.asset->url,
+  "productUrl": slug.current
+}`;
+
+  const product = await sanityClient.fetch(query); // Pass slug as parameter
+  return product;
+};
