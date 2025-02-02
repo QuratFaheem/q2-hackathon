@@ -1,8 +1,6 @@
 import Header from "../components/header";
 import Nikebar from "../components/nikebar";
 import Footer from "../components/footer";
-import Link from "next/link";
-import Image from "next/image";
 import Sidemenue from "../components/sidemenue";
 
 export default async function Noproduct() {

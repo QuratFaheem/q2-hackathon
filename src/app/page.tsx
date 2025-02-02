@@ -11,6 +11,7 @@ import { GetEssentials } from "@/sanity/sanity.query";
 
 
 export default async function Home() {
+  console.log("Sanity Token:", process.env.NEXT_PUBLIC_SANITY_TOKEN);
   const productsData: ProductLog[] = await GetAllProducts();
     const menproduct = await GetMenShoes();
     const Mproduct = menproduct || [];
@@ -19,6 +20,7 @@ export default async function Home() {
    const EssproductData = await GetEssentials();
      const Essproducts = EssproductData || [];
      console.log('Essentials products:', Essproducts);
+     console.log("Sanity Token:", process.env.NEXT_PUBLIC_SANITY_TOKEN);
   
     interface ProductLog {
       _id: string;
