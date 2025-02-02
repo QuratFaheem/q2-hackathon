@@ -5,8 +5,8 @@ const SanityClient:ClientConfig={
     projectId: "lsmgqpme",
     dataset: "production",
     apiVersion:"2025-02-02",
-    useCdn: false,
-token: process.env.SANITY_SECRET_TOKEN,
+    token: process.env.SANITY_API_TOKEN, // Ensure the token is set here
+  useCdn: false,
 }
 
 export default createClient(SanityClient);

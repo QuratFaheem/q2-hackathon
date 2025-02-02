@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Header from '../components/header';
 import Nikebar from '../components/nikebar';
 import Footer from '../components/footer';
+import { client } from '@/sanity/lib/client';
 
 interface ProductLog {
   _id: string;
@@ -18,9 +19,8 @@ interface ProductLog {
   imageUrl?: string;
 }
 
-const getCartItems = async (): Promise<ProductLog[]> => {
-  const items = JSON.parse(localStorage.getItem('cart') || '[]');
-  return items;
+const getCartItems = (): ProductLog[] => {
+  return JSON.parse(localStorage.getItem('cart') || '[]');
 };
 
 const calculateTotal = (items: ProductLog[]) => {
@@ -65,53 +65,34 @@ const Cartpage = () => {
     localStorage.setItem('cart', JSON.stringify(updatedCart));
   };
 
-    const handleProceedToPayment = async () => {
-      const orderData = {
-        _type: 'order',
-        firstname: formData.firstname,
-        lastname: formData.lastname,
-        phone: formData.phone,
-        email: formData.email,
-        address: formData.address,
-        city: formData.city,
-        zip: formData.zip,
-        cartItems: cartItems.map(item => ({
-          _type: 'reference',
-          _ref: item._id,
-        })),
-        totalAmount: calculateTotal(cartItems),
-        orderDate: new Date().toISOString(),
-      };
-    
-      try {
-        const response = await fetch('/api/createOrder', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(orderData),
-        });
-    
-        const data = await response.json();
-    
-        if (!response.ok) {
-          console.error('Order creation failed:', data.error);
-          throw new Error(data.error || 'Unknown error');
-        }
-    
-        console.log('Order created successfully:', data);
-        localStorage.removeItem('cart');
-      } catch (error: unknown) {
-        let errorMessage = 'An error occurred while placing the order';
-    
-        if (error instanceof Error) {
-          errorMessage = error.message;
-        }
-    
-        console.error('Error placing order:', errorMessage);
-      }
-    };
-    
-    
+  const handleProceedToPayment = async () => {
+    console.log("Proceed to Payment clicked"); // Debugging log
   
+    const orderData = {
+      _type: 'order',
+      firstname: formData.firstname,
+      lastname: formData.lastname,
+      phone: formData.phone,
+      email: formData.email,
+      address: formData.address,
+      city: formData.city,
+      zip: formData.zip,
+      cartItems: cartItems.map(item => ({
+        _type: 'reference',
+        _ref: item._id,
+      })),
+      total: calculateTotal(cartItems),
+      orderDate: new Date().toISOString(),
+    };
+  
+    try {
+      await client.create(orderData);
+      localStorage.removeItem("applied discount");
+      console.log("Order created successfully");
+    } catch (error) {
+      console.error("Error creating order", error);
+    }
+  };
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -183,76 +164,82 @@ const Cartpage = () => {
         </div>
         <div className="bg-gray-100 p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-bold mb-4">Delivery Details</h2>
-          <input
-            type="text"
-            name="firstname"
-            value={formData.firstname}
-            onChange={handleChange}
-            placeholder="First Name"
-            className="w-full p-2 mb-3 border rounded"
-          />
-          <input
-            type="text"
-            name="lastname"
-            value={formData.lastname}
-            onChange={handleChange}
-            placeholder="Last Name"
-            className="w-full p-2 mb-3 border rounded"
-          />
-          <textarea
-            name="address"
-            value={formData.address}
-            onChange={handleChange}
-            placeholder="Address"
-            className="w-full p-2 mb-3 border rounded"
-          ></textarea>
-          <input
-            type="text"
-            name="city"
-            value={formData.city}
-            onChange={handleChange}
-            placeholder="City"
-            className="w-full p-2 mb-3 border rounded"
-          />
-          <input
-            type="text"
-            name="zip"
-            value={formData.zip}
-            onChange={handleChange}
-            placeholder="Zip Code"
-            className="w-full p-2 mb-3 border rounded"
-          />
-          <input
-            type="text"
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-            placeholder="Phone Number"
-            className="w-full p-2 mb-3 border rounded"
-          />
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="Email"
-            className="w-full p-2 mb-3 border rounded"
-          />
-          <select
-            name="orderType"
-            value={formData.orderType}
-            onChange={handleChange}
-            className="w-full p-2 mb-3 border rounded"
-          >
-            <option value="cash on delivery">Cash on Delivery</option>
-            <option value="advance payment">Advance Payment</option>
-          </select>
-          <button
-            onClick={handleProceedToPayment}
-            className="w-full px-6 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700"
-          >
-            Proceed to Payment
-          </button>
+          <form>
+            <input
+              type="text"
+              name="firstname"
+              value={formData.firstname}
+              onChange={handleChange}
+              placeholder="First Name"
+              className="w-full p-2 mb-3 border rounded"
+            />
+            <input
+              type="text"
+              name="lastname"
+              value={formData.lastname}
+              onChange={handleChange}
+              placeholder="Last Name"
+              className="w-full p-2 mb-3 border rounded"
+            />
+            <textarea
+              name="address"
+              value={formData.address}
+              onChange={handleChange}
+              placeholder="Address"
+              className="w-full p-2 mb-3 border rounded"
+            ></textarea>
+            <input
+              type="text"
+              name="city"
+              value={formData.city}
+              onChange={handleChange}
+              placeholder="City"
+              className="w-full p-2 mb-3 border rounded"
+            />
+            <input
+              type="text"
+              name="zip"
+              value={formData.zip}
+              onChange={handleChange}
+              placeholder="Zip Code"
+              className="w-full p-2 mb-3 border rounded"
+            />
+            <input
+              type="text"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              placeholder="Phone Number"
+              className="w-full p-2 mb-3 border rounded"
+            />
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="Email"
+              className="w-full p-2 mb-3 border rounded"
+            />
+            <select
+              name="orderType"
+              value={formData.orderType}
+              onChange={handleChange}
+              className="w-full p-2 mb-3 border rounded"
+            >
+                            <option value="cash on delivery">Cash on Delivery</option>
+              <option value="advance payment">Advance Payment</option>
+            </select>
+            <button
+              type="button"
+              onClick={() => {
+                console.log("Button Clicked");
+                handleProceedToPayment();
+              }}
+              className="w-full px-6 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700"
+            >
+              Proceed to Payment
+            </button>
+          </form>
         </div>
       </div>
       <Footer />

@@ -1,3 +1,4 @@
+
 const orderSchema = {
   name: 'order',
   title: 'Order',
@@ -16,7 +17,7 @@ const orderSchema = {
       title: 'Cart Items', 
       of: [{ type: 'reference', to: [{ type: 'product' }] }] 
     },
-    { name: 'totalAmount', type: 'number', title: 'Total Amount' },
+    { name: 'total', type: 'number', title: 'Total' },
     { name: 'orderDate', type: 'datetime', title: 'Order Date' },
   ],
 };
