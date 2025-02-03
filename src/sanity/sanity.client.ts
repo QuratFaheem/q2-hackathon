@@ -4,9 +4,8 @@ import { createClient, type ClientConfig } from "next-sanity";
 const SanityClient:ClientConfig={
     projectId: "lsmgqpme",
     dataset: "production",
-    apiVersion:"2025-02-02",
-    token: process.env.SANITY_API_TOKEN, // Ensure the token is set here
-  useCdn: false,
+    apiVersion:"2025-01-18",
+    useCdn: false
 }
 
 export default createClient(SanityClient);

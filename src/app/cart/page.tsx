@@ -6,18 +6,20 @@ import Image from 'next/image';
 import Header from '../components/header';
 import Nikebar from '../components/nikebar';
 import Footer from '../components/footer';
-import { client } from '@/sanity/lib/client';
+import { useRouter } from 'next/navigation';
+
+
+
 
 interface ProductLog {
   _id: string;
   productName: string;
   description: string;
   price: number;
-  category: string;
   inventory: number;
-  productUrl: string;
   imageUrl?: string;
 }
+
 
 const getCartItems = (): ProductLog[] => {
   return JSON.parse(localStorage.getItem('cart') || '[]');
@@ -29,26 +31,14 @@ const calculateTotal = (items: ProductLog[]) => {
 
 const Cartpage = () => {
   const [cartItems, setCartItems] = useState<ProductLog[]>([]);
-  const [formData, setFormData] = useState({
-    firstname: '',
-    lastname: '',
-    address: '',
-    city: '',
-    zip: '',
-    phone: '',
-    email: '',
-    orderType: 'cash on delivery',
-  });
+  const router = useRouter();
 
   useEffect(() => {
-    const fetchCartItems = async () => {
-      const items = await getCartItems();
-      setCartItems(items);
-    };
-
-    fetchCartItems();
+    setCartItems(getCartItems());
   }, []);
 
+  
+  
   const handleQuantityChange = (itemId: string, change: number) => {
     setCartItems((prevItems) =>
       prevItems.map((item) =>
@@ -65,39 +55,6 @@ const Cartpage = () => {
     localStorage.setItem('cart', JSON.stringify(updatedCart));
   };
 
-  const handleProceedToPayment = async () => {
-    console.log("Proceed to Payment clicked"); // Debugging log
-  
-    const orderData = {
-      _type: 'order',
-      firstname: formData.firstname,
-      lastname: formData.lastname,
-      phone: formData.phone,
-      email: formData.email,
-      address: formData.address,
-      city: formData.city,
-      zip: formData.zip,
-      cartItems: cartItems.map(item => ({
-        _type: 'reference',
-        _ref: item._id,
-      })),
-      total: calculateTotal(cartItems),
-      orderDate: new Date().toISOString(),
-    };
-  
-    try {
-      await client.create(orderData);
-      localStorage.removeItem("applied discount");
-      console.log("Order created successfully");
-    } catch (error) {
-      console.error("Error creating order", error);
-    }
-  };
-  
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
   return (
     <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
       <Header />
@@ -105,142 +62,68 @@ const Cartpage = () => {
       <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6 text-center">
         Your Shopping Bag
       </h1>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="md:col-span-2 space-y-6">
-          {cartItems.length > 0 ? (
-            cartItems.map((item) => (
-              <div key={item._id} className="flex items-center justify-between border-b pb-6">
-                <div className="flex items-center space-x-6">
-                  <Image
-                    src={item.imageUrl || '/placeholder-image.jpg'}
-                    alt={item.productName}
-                    width={100}
-                    height={100}
-                    className="w-24 h-24 object-cover rounded-lg"
-                  />
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-700">{item.productName}</h3>
-                    <p className="text-gray-500 text-sm">{item.description}</p>
-                  </div>
+      <div className="space-y-6">
+        {cartItems.length > 0 ? (
+          cartItems.map((item) => (
+            <div key={item._id} className="flex items-center justify-between border-b pb-6">
+              <div className="flex items-center space-x-6">
+                <Image
+                  src={item.imageUrl || '/placeholder-image.jpg'}
+                  alt={item.productName}
+                  width={100}
+                  height={100}
+                  className="w-24 h-24 object-cover rounded-lg"
+                />
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-700">{item.productName}</h3>
+                  <p className="text-gray-500 text-sm">{item.description}</p>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <button
-                    onClick={() => handleQuantityChange(item._id, -1)}
-                    className="px-3 py-1 bg-gray-300 text-gray-700 rounded-full"
-                  >
-                    -
-                  </button>
-                  <span className="text-lg font-semibold">{item.inventory}</span>
-                  <button
-                    onClick={() => handleQuantityChange(item._id, 1)}
-                    className="px-3 py-1 bg-gray-300 text-gray-700 rounded-full"
-                  >
-                    +
-                  </button>
-                </div>
-                <span className="text-lg font-semibold text-gray-800">
-                  ${(item.price * item.inventory).toFixed(2)}
-                </span>
-                <button onClick={() => handleDeleteItem(item._id)} className="text-red-600">
-                  <TrashIcon className="w-6 h-6" />
+              </div>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => handleQuantityChange(item._id, -1)}
+                  className="px-3 py-1 bg-gray-300 text-gray-700 rounded-full"
+                >
+                  -
+                </button>
+                <span className="text-lg font-semibold">{item.inventory}</span>
+                <button
+                  onClick={() => handleQuantityChange(item._id, 1)}
+                  className="px-3 py-1 bg-gray-300 text-gray-700 rounded-full"
+                >
+                  +
                 </button>
               </div>
-            ))
-          ) : (
-            <div className="text-center text-gray-600 text-xl">No items in your cart.</div>
-          )}
-          <div className="flex justify-between mt-6 font-semibold text-xl">
-            <span>Subtotal:</span>
-            <span>${calculateTotal(cartItems).toFixed(2)}</span>
-          </div>
-          <div className="flex justify-between mt-2 font-semibold text-xl">
-            <span>Delivery Charges:</span>
-            <span>$0.00</span>
-          </div>
-          <div className="flex justify-between mt-2 font-semibold text-xl bg-blue-400 text-white p-2 rounded-lg">
-            <span>Total:</span>
-            <span>${calculateTotal(cartItems).toFixed(2)}</span>
-          </div>
+              <span className="text-lg font-semibold text-gray-800">
+                ${(item.price * item.inventory).toFixed(2)}
+              </span>
+              <button onClick={() => handleDeleteItem(item._id)} className="text-red-600">
+                <TrashIcon className="w-6 h-6" />
+              </button>
+            </div>
+          ))
+        ) : (
+          <div className="text-center text-gray-600 text-xl">No items in your cart.</div>
+        )}
+        <div className="flex justify-between mt-6 font-semibold text-xl">
+          <span>Subtotal:</span>
+          <span>${calculateTotal(cartItems).toFixed(2)}</span>
         </div>
-        <div className="bg-gray-100 p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-bold mb-4">Delivery Details</h2>
-          <form>
-            <input
-              type="text"
-              name="firstname"
-              value={formData.firstname}
-              onChange={handleChange}
-              placeholder="First Name"
-              className="w-full p-2 mb-3 border rounded"
-            />
-            <input
-              type="text"
-              name="lastname"
-              value={formData.lastname}
-              onChange={handleChange}
-              placeholder="Last Name"
-              className="w-full p-2 mb-3 border rounded"
-            />
-            <textarea
-              name="address"
-              value={formData.address}
-              onChange={handleChange}
-              placeholder="Address"
-              className="w-full p-2 mb-3 border rounded"
-            ></textarea>
-            <input
-              type="text"
-              name="city"
-              value={formData.city}
-              onChange={handleChange}
-              placeholder="City"
-              className="w-full p-2 mb-3 border rounded"
-            />
-            <input
-              type="text"
-              name="zip"
-              value={formData.zip}
-              onChange={handleChange}
-              placeholder="Zip Code"
-              className="w-full p-2 mb-3 border rounded"
-            />
-            <input
-              type="text"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              placeholder="Phone Number"
-              className="w-full p-2 mb-3 border rounded"
-            />
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Email"
-              className="w-full p-2 mb-3 border rounded"
-            />
-            <select
-              name="orderType"
-              value={formData.orderType}
-              onChange={handleChange}
-              className="w-full p-2 mb-3 border rounded"
-            >
-                            <option value="cash on delivery">Cash on Delivery</option>
-              <option value="advance payment">Advance Payment</option>
-            </select>
-            <button
-              type="button"
-              onClick={() => {
-                console.log("Button Clicked");
-                handleProceedToPayment();
-              }}
-              className="w-full px-6 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700"
-            >
-              Proceed to Payment
-            </button>
-          </form>
+        <div className="flex justify-between mt-2 font-semibold text-xl">
+          <span>Delivery Charges:</span>
+          <span>$0.00</span>
         </div>
+        <div className="flex justify-between mt-2 font-semibold text-xl bg-blue-400 text-white p-2 rounded-lg">
+          <span>Total:</span>
+          <span>${calculateTotal(cartItems).toFixed(2)}</span>
+        </div>
+        <button
+  onClick={() => router.push('/payment')}
+  className="w-full px-6 py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 mt-4"
+>
+  Proceed to Payment
+</button>
+
       </div>
       <Footer />
     </div>
