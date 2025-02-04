@@ -18,10 +18,7 @@ export default async function Home() {
     const products = productsData || [];
    /* console.log("Fetched products:", products);*/
    const EssproductData = await GetEssentials();
-     const Essproducts = EssproductData || [];
-     console.log('Essentials products:', Essproducts);
-     console.log("Sanity Token:", process.env.NEXT_PUBLIC_SANITY_TOKEN);
-  
+     const Essproducts = EssproductData || [];  
     interface ProductLog {
       _id: string;
       productName: string;
