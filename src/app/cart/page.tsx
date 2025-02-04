@@ -8,9 +8,6 @@ import Nikebar from '../components/nikebar';
 import Footer from '../components/footer';
 import { useRouter } from 'next/navigation';
 
-
-
-
 interface ProductLog {
   _id: string;
   productName: string;
@@ -19,7 +16,6 @@ interface ProductLog {
   inventory: number;
   imageUrl?: string;
 }
-
 
 const getCartItems = (): ProductLog[] => {
   return JSON.parse(localStorage.getItem('cart') || '[]');
@@ -37,8 +33,6 @@ const Cartpage = () => {
     setCartItems(getCartItems());
   }, []);
 
-  
-  
   const handleQuantityChange = (itemId: string, change: number) => {
     setCartItems((prevItems) =>
       prevItems.map((item) =>
@@ -65,14 +59,14 @@ const Cartpage = () => {
       <div className="space-y-6">
         {cartItems.length > 0 ? (
           cartItems.map((item) => (
-            <div key={item._id} className="flex items-center justify-between border-b pb-6">
-              <div className="flex items-center space-x-6">
+            <div key={item._id} className="flex flex-col sm:flex-row items-center justify-between border-b pb-6 space-y-4 sm:space-y-0 sm:space-x-4">
+              <div className="flex flex-col sm:flex-row items-center space-x-0 sm:space-x-6 w-full sm:w-auto text-center sm:text-left">
                 <Image
                   src={item.imageUrl || '/placeholder-image.jpg'}
                   alt={item.productName}
                   width={100}
                   height={100}
-                  className="w-24 h-24 object-cover rounded-lg"
+                  className="w-24 h-24 object-cover rounded-lg mx-auto sm:mx-0"
                 />
                 <div>
                   <h3 className="text-lg font-semibold text-gray-700">{item.productName}</h3>
@@ -105,25 +99,24 @@ const Cartpage = () => {
         ) : (
           <div className="text-center text-gray-600 text-xl">No items in your cart.</div>
         )}
-        <div className="flex justify-between mt-6 font-semibold text-xl">
+        <div className="flex flex-col sm:flex-row justify-between mt-6 font-semibold text-xl">
           <span>Subtotal:</span>
           <span>${calculateTotal(cartItems).toFixed(2)}</span>
         </div>
-        <div className="flex justify-between mt-2 font-semibold text-xl">
+        <div className="flex flex-col sm:flex-row justify-between mt-2 font-semibold text-xl">
           <span>Delivery Charges:</span>
           <span>$0.00</span>
         </div>
-        <div className="flex justify-between mt-2 font-semibold text-xl bg-blue-400 text-white p-2 rounded-lg">
+        <div className="flex flex-col sm:flex-row justify-between mt-2 font-semibold text-xl bg-blue-400 text-white p-2 rounded-lg">
           <span>Total:</span>
           <span>${calculateTotal(cartItems).toFixed(2)}</span>
         </div>
         <button
-  onClick={() => router.push('/payment')}
-  className="w-full px-6 py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 mt-4"
->
-  Proceed to Payment
-</button>
-
+          onClick={() => router.push('/payment')}
+          className="w-full px-6 py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 mt-4"
+        >
+          Proceed to Payment
+        </button>
       </div>
       <Footer />
     </div>
